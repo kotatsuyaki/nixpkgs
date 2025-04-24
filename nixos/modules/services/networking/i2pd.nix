@@ -240,7 +240,10 @@ let
             ++ (optionals (tun ? outbound.quantity) (optionalNullInt "outbound.quantity" tun.outbound.quantity))
             ++ (optionals (tun ? crypto.tagsToSend) (
               optionalNullInt "crypto.tagstosend" tun.crypto.tagsToSend
-            ));
+            ))
+            ++ (optionals (tun ? i2cp.dontPublishLeaseSet) (optionalNullBool "i2cp.dontPublishLeaseSet" tun.i2cp.dontPublishLeaseSet))
+            ++ (optionals (tun ? i2cp.leaseSetType) (optionalNullInt "i2cp.leaseSetType" tun.i2cp.leaseSetType))
+            ++ (optionals (tun ? i2cp.leaseSetPrivKey) (optionalNullString "i2cp.leaseSetPrivKey" tun.i2cp.leaseSetPrivKey));
         in
         lib.concatStringsSep "\n" outTunOpts;
 
@@ -677,6 +680,11 @@ in
                   type = with types; nullOr int;
                   default = null;
                   description = "Connect to particular port at destination.";
+                };
+                i2cp = mkOption {
+                  type = types.attrs;
+                  default = {};
+                  description = "Tunnel-specific i2cp options.";
                 };
               } // commonTunOpts name;
               config = {
